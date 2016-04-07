@@ -1,0 +1,37 @@
+// *******************************************************
+// PARTIALLY GENERATED FILE -- Edit the indicated sections
+// Parameterized with:
+//
+// EndpointName = {{ .EndpointName }}
+// RequestName = {{ .RequestName }}
+// RequestType = {{ .RequestType }}
+// ResponseName = {{ .ResponseName }}
+// ResponseType = {{ .ResponseType }}
+// ********************************************************
+
+package main
+
+type {{ .EndpointName }}Service interface {
+Call{{ .EndpointName }} ({{ .RequestType }}) ({{ .ResponseType }}, error)
+}
+
+type service struct{}
+
+type {{ .ResponseType}} struct {
+
+// Add in the json struct elements that the service will return back in its response.
+// 
+//
+
+}
+
+func (service) {{ .EndpointName }}(input {{ .RequestType }}) ({{ .ResponseType}}, error) {
+
+output := {{ .ResponseType }} {}
+
+// Add in the main logic of the service
+//
+//
+
+	return output, err
+}

@@ -6,6 +6,12 @@ import (
 	"os"
 )
 
+var endpointName = flag.String("endpoint-name", "", "Name of the endpoint based on the service")
+var requestName = flag.String("request-name", "", "")
+var requestType = flag.String("request-type", "", "")
+var responseName = flag.String("response-name", "", "")
+var responseType = flag.String("response-type", "", "")
+
 func init() {
 	flag.Usage = func() {
 		fmt.Fprintln(os.Stderr, "Usage of go-kit-generator:")
@@ -16,16 +22,11 @@ func init() {
 	}
 
 	flag.CommandLine.Init("", flag.ExitOnError)
+
+	flag.Parse()
 }
 
 func transportGen() {
-	endpointName := flag.String("endpoint-name", "", "Name of the endpoint based on the service")
-	requestName := flag.String("request-name", "", "")
-	requestType := flag.String("request-type", "", "")
-	responseName := flag.String("response-name", "", "")
-	responseType := flag.String("response-type", "", "")
-
-	flag.Parse()
 
 	outputFile := "transport.go"
 	writer, err := os.Create(outputFile)
@@ -36,7 +37,7 @@ func transportGen() {
 
 	generator := &Generator{}
 
-	m := transportMetadata(*endpointName, *requestName, *requestType, *responseName, *responseType)
+	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType}
 	if err := generator.Transport(writer, m); err != nil {
 		panic(err)
 	}
@@ -44,16 +45,28 @@ func transportGen() {
 	fmt.Printf("Generated %s\n", outputFile)
 }
 
-func transportMetadata(endpointName string, requestName string, requestType string, responseName string, responseType string) (m TransportMetadata) {
-	m.EndpointName = endpointName
-	m.RequestName = requestName
-	m.RequestType = requestType
-	m.ResponseName = responseName
-	m.ResponseType = responseType
+func serviceGen() {
 
-	return m
+	outputFile := "service.go"
+	writer, err := os.Create(outputFile)
+	if err != nil {
+		panic(err)
+	}
+	defer writer.Close()
+
+	generator := &Generator{}
+
+	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType}
+	if err := generator.Service(writer, m); err != nil {
+		panic(err)
+	}
+
+	fmt.Println(m)
+
+	fmt.Printf("Generated %s\n", outputFile)
 }
 
 func main() {
 	transportGen()
+	serviceGen()
 }
