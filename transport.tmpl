@@ -1,4 +1,14 @@
+// *********************************************
 // GENERATED FILE -- DO NOT EDIT PLEASE
+// Parameterized with:
+//
+// EndpointName = {{ .EndpointName }}
+// RequestName = {{ .RequestName }}
+// RequestType = {{ .RequestType }}
+// ResponseName = {{ .ResponseName }}
+// ResponseType = {{ .ResponseType }}
+// *********************************************
+
 package main
 
 import (
@@ -11,12 +21,12 @@ import (
 
 // Request
 type {{ .EndpointName }}Request struct {
-{{ .RequestInput }} {{ .InputType }} `json:"{{ .RequestInput }}"`
+  {{ .RequestName }} {{ .RequestType }} `json:"{{ .RequestName }}"`
 }
 
 // Response
 type {{ .EndpointName }}Response struct {
-  {{ .ResponseOutput }} {{ .OutputType }} `json:"{{ .ResponseOutput }}"`
+  {{ .ResponseName }} {{ .ResponseType }} `json:"{{ .ResponseName }}"`
 	Err    string            `json:"err,omitempty"`
 }
 
@@ -24,11 +34,11 @@ type {{ .EndpointName }}Response struct {
 func make{{ .EndpointName }}Endpoint(svc {{ .EndpointName }}Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
   req := request.({{ .EndpointName }}Request)
-  output, err := svc.{{ .EndpointName }}(req.{{ .RequestInput}})
+  output, err := svc.{{ .EndpointName }}(req.{{ .RequestName}})
 		if err != nil {
-    return {{ .EndpointName }}Response{ {{ .ResponseOutput }}, err.Error() }, nil
+      return {{ .EndpointName }}Response{ {{ .ResponseName }}, err.Error() }, nil
 		}
-    return {{ .EndpointName }} Response{ {{ .ResponseOutput }}, "" }, nil
+    return {{ .EndpointName }} Response{ {{ .ResponseName }}, "" }, nil
 	}
 }
 

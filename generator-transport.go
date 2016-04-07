@@ -8,11 +8,11 @@ import (
 )
 
 type Metadata struct {
-	EndpointName   string
-	RequestInput   string
-	InputType      string
-	ResponseOutput string
-	OutputType     string
+	EndpointName string
+	RequestName  string
+	RequestType  string
+	ResponseName string
+	ResponseType string
 }
 
 type Generator struct {

@@ -1,4 +1,13 @@
+// *********************************************
 // GENERATED FILE -- DO NOT EDIT PLEASE
+// Parameterized with:
+//
+// EndpointName = GenerateOcrQuality
+// RequestName = OcrText
+// RequestType = string
+// ResponseName = QualityMetric
+// ResponseType = OcrQuality
+// *********************************************
 package main
 
 import (
@@ -11,7 +20,7 @@ import (
 
 // Request
 type GenerateOcrQualityRequest struct {
-OcrText string `json:"OcrText"`
+  OcrText string `json:"OcrText"`
 }
 
 // Response
@@ -26,7 +35,7 @@ func makeGenerateOcrQualityEndpoint(svc GenerateOcrQualityService) endpoint.Endp
   req := request.(GenerateOcrQualityRequest)
   output, err := svc.GenerateOcrQuality(req.OcrText)
 		if err != nil {
-    return GenerateOcrQualityResponse{ QualityMetric, err.Error() }, nil
+      return GenerateOcrQualityResponse{ QualityMetric, err.Error() }, nil
 		}
     return GenerateOcrQuality Response{ QualityMetric, "" }, nil
 	}

@@ -10,7 +10,7 @@ func init() {
 	flag.Usage = func() {
 		fmt.Fprintln(os.Stderr, "Usage of go-kit-generator:")
 		fmt.Fprintln(os.Stderr, "")
-		fmt.Fprintln(os.Stderr, "  go-kit-generator -endpoint-name=<endpoint-name> -request-input=<request-input> -input-type=<input-type> -response-output=<response-output> -output-type=<output-type>")
+		fmt.Fprintln(os.Stderr, "  go-kit-generator -endpoint-name=<endpoint-name> -request-name=<request-name> -request-type=<request-type> -response-name=<response-name> -response-type=<response-type>")
 		fmt.Fprintln(os.Stderr, "")
 		flag.PrintDefaults()
 	}
@@ -20,10 +20,10 @@ func init() {
 
 func main() {
 	endpointName := flag.String("endpoint-name", "", "Name of the endpoint based on the service")
-	requestInput := flag.String("request-input", "", "")
-	inputType := flag.String("input-type", "", "")
-	responseOutput := flag.String("response-output", "", "")
-	outputType := flag.String("output-type", "", "")
+	requestName := flag.String("request-name", "", "")
+	requestType := flag.String("request-type", "", "")
+	responseName := flag.String("response-name", "", "")
+	responseType := flag.String("response-type", "", "")
 
 	flag.Parse()
 
@@ -36,7 +36,7 @@ func main() {
 
 	generator := &Generator{}
 
-	m := metadata(*endpointName, *requestInput, *inputType, *responseOutput, *outputType)
+	m := metadata(*endpointName, *requestName, *requestType, *responseName, *responseType)
 	if err := generator.Generate(writer, m); err != nil {
 		panic(err)
 	}
@@ -44,12 +44,12 @@ func main() {
 	fmt.Printf("Generated %s\n", outputFile)
 }
 
-func metadata(endpointName string, requestInput string, inputType string, responseOutput string, outputType string) (m Metadata) {
+func metadata(endpointName string, requestName string, requestType string, responseName string, responseType string) (m Metadata) {
 	m.EndpointName = endpointName
-	m.RequestInput = requestInput
-	m.InputType = inputType
-	m.ResponseOutput = responseOutput
-	m.OutputType = outputType
+	m.RequestName = requestName
+	m.RequestType = requestType
+	m.ResponseName = responseName
+	m.ResponseType = responseType
 
 	return m
 }
