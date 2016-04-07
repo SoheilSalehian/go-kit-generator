@@ -28,7 +28,7 @@ func init() {
 
 func transportGen() {
 
-	outputFile := "transport.go"
+	outputFile := "transport_gen.go"
 	writer, err := os.Create(outputFile)
 	if err != nil {
 		panic(err)
@@ -47,7 +47,7 @@ func transportGen() {
 
 func serviceGen() {
 
-	outputFile := "service.go"
+	outputFile := "service_gen.go"
 	writer, err := os.Create(outputFile)
 	if err != nil {
 		panic(err)

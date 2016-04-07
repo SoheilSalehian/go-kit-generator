@@ -1,7 +1,8 @@
 # Makefile to generate the essential skeleton of a microservice 
-SUBDIRS := $(wildcard u*/.)
-all: $(SUBDIRS) 
-$(SUBDIRS):
-	go-bindata templates/... ; go build && cd $@; go generate && go fmt
+all:
+	go-bindata templates/... ; go build && cd ${U_SERVICE_DIR}; go generate && go fmt
 
-.PHONY: all $(SUBDIRS)
+clean: 
+	rm bindata.go
+	cd ${U_SERVICE_DIR} && rm *_gen.go 
+

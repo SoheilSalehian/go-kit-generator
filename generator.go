@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"text/template"
 )
@@ -62,6 +63,6 @@ func (g *Generator) serviceTemplate() (*template.Template, error) {
 	return tmpl.Parse(string(resource))
 }
 
-// func (g *Generator) Printf(format string, args ...interface{}) {
-// 	fmt.Fprintf(&g.buf, format, args...)
-// }
+func (g *Generator) Printf(format string, args ...interface{}) {
+	fmt.Fprintf(&g.buf, format, args...)
+}
