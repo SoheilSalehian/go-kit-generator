@@ -26,9 +26,9 @@ func make{{ .EndpointName }}Endpoint(svc {{ .EndpointName }}Service) endpoint.En
   req := request.({{ .EndpointName }}Request)
   output, err := svc.{{ .EndpointName }}(req.{{ .RequestInput}})
 		if err != nil {
-    return {{ .EndpointName }}Response{\{{ .ResponseOutput }}, err.Error()}, nil
+    return {{ .EndpointName }}Response{ {{ .ResponseOutput }}, err.Error() }, nil
 		}
-    return {{ .EndpointName }} Response{\{{ .ResponseOutput }}, ""}, nil
+    return {{ .EndpointName }} Response{ {{ .ResponseOutput }}, "" }, nil
 	}
 }
 

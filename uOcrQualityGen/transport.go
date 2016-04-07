@@ -26,9 +26,9 @@ func makeGenerateOcrQualityEndpoint(svc GenerateOcrQualityService) endpoint.Endp
   req := request.(GenerateOcrQualityRequest)
   output, err := svc.GenerateOcrQuality(req.OcrText)
 		if err != nil {
-    return GenerateOcrQualityResponse{\QualityMetric, err.Error()}, nil
+    return GenerateOcrQualityResponse{ QualityMetric, err.Error() }, nil
 		}
-    return GenerateOcrQuality Response{\QualityMetric, ""}, nil
+    return GenerateOcrQuality Response{ QualityMetric, "" }, nil
 	}
 }
 

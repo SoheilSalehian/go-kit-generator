@@ -8,9 +8,9 @@ import (
 
 func init() {
 	flag.Usage = func() {
-		fmt.Fprintln(os.Stderr, "Usage of microgenerator:")
+		fmt.Fprintln(os.Stderr, "Usage of go-kit-generator:")
 		fmt.Fprintln(os.Stderr, "")
-		fmt.Fprintln(os.Stderr, "  microgenerator -endpoint-name=<endpoint-name> -request-input=<request-input> -input-type=<input-type> -response-output=<response-output> -output-type=<output-type>")
+		fmt.Fprintln(os.Stderr, "  go-kit-generator -endpoint-name=<endpoint-name> -request-input=<request-input> -input-type=<input-type> -response-output=<response-output> -output-type=<output-type>")
 		fmt.Fprintln(os.Stderr, "")
 		flag.PrintDefaults()
 	}
@@ -37,7 +37,6 @@ func main() {
 	generator := &Generator{}
 
 	m := metadata(*endpointName, *requestInput, *inputType, *responseOutput, *outputType)
-	// fmt.Println(m)
 	if err := generator.Generate(writer, m); err != nil {
 		panic(err)
 	}
