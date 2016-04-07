@@ -25,7 +25,7 @@ type OcrQuality struct {
 
 }
 
-func (service) GenerateOcrQuality(input string) (OcrQuality, error) {
+func (service) CallGenerateOcrQuality(input string) (OcrQuality, error) {
 
 	output := OcrQuality{}
 

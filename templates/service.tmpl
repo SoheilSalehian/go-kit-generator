@@ -25,7 +25,7 @@ type {{ .ResponseType}} struct {
 
 }
 
-func (service) {{ .EndpointName }}(input {{ .RequestType }}) ({{ .ResponseType}}, error) {
+func (service) Call{{ .EndpointName }}(input {{ .RequestType }}) ({{ .ResponseType}}, error) {
 
 output := {{ .ResponseType }} {}
 

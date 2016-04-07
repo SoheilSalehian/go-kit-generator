@@ -34,11 +34,11 @@ type GenerateOcrQualityResponse struct {
 func makeGenerateOcrQualityEndpoint(svc GenerateOcrQualityService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GenerateOcrQualityRequest)
-		output, err := svc.GenerateOcrQuality(req.OcrText)
+		serviceOutput, err := svc.GenerateOcrQuality(req.OcrText)
 		if err != nil {
-			return GenerateOcrQualityResponse{QualityMetric, err.Error()}, nil
+			return GenerateOcrQualityResponse{serviceOutput, err}, nil
 		}
-		return GenerateOcrQualityResponse{QualityMetric, ""}, nil
+		return GenerateOcrQualityResponse{serviceOutput, ""}, nil
 	}
 }
 

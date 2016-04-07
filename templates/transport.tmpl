@@ -34,11 +34,11 @@ type {{ .EndpointName }}Response struct {
 func make{{ .EndpointName }}Endpoint(svc {{ .EndpointName }}Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
   req := request.({{ .EndpointName }}Request)
-  output, err := svc.{{ .EndpointName }}(req.{{ .RequestName}})
+  serviceOutput, err := svc.{{ .EndpointName }}(req.{{ .RequestName}})
 		if err != nil {
-      return {{ .EndpointName }}Response{ {{ .ResponseName }}, err.Error() }, nil
+      return {{ .EndpointName }}Response{ serviceOutput, err }, nil
 		}
-    return {{ .EndpointName }}Response{ {{ .ResponseName }}, "" }, nil
+    return {{ .EndpointName }}Response{ serviceOutput, "" }, nil
 	}
 }
 
