@@ -38,7 +38,7 @@ func make{{ .EndpointName }}Endpoint(svc {{ .EndpointName }}Service) endpoint.En
 		if err != nil {
       return {{ .EndpointName }}Response{ {{ .ResponseName }}, err.Error() }, nil
 		}
-    return {{ .EndpointName }} Response{ {{ .ResponseName }}, "" }, nil
+    return {{ .EndpointName }}Response{ {{ .ResponseName }}, "" }, nil
 	}
 }
 

@@ -2,6 +2,6 @@
 SUBDIRS := $(wildcard u*/.)
 all: $(SUBDIRS) 
 $(SUBDIRS):
-	/Users/Soheil/Projects/OL/go/bin/go-bindata -o resources.go transport.tmpl && go build && cd $@;rm transport.go; go generate
+	/Users/Soheil/Projects/OL/go/bin/go-bindata -o resources.go transport.tmpl && go build && cd $@;rm transport.go; go generate && go fmt
 
 .PHONY: all $(SUBDIRS)

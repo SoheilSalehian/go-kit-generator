@@ -18,7 +18,7 @@ func init() {
 	flag.CommandLine.Init("", flag.ExitOnError)
 }
 
-func main() {
+func transportGen() {
 	endpointName := flag.String("endpoint-name", "", "Name of the endpoint based on the service")
 	requestName := flag.String("request-name", "", "")
 	requestType := flag.String("request-type", "", "")
@@ -36,15 +36,15 @@ func main() {
 
 	generator := &Generator{}
 
-	m := metadata(*endpointName, *requestName, *requestType, *responseName, *responseType)
-	if err := generator.Generate(writer, m); err != nil {
+	m := transportMetadata(*endpointName, *requestName, *requestType, *responseName, *responseType)
+	if err := generator.Transport(writer, m); err != nil {
 		panic(err)
 	}
 
 	fmt.Printf("Generated %s\n", outputFile)
 }
 
-func metadata(endpointName string, requestName string, requestType string, responseName string, responseType string) (m Metadata) {
+func transportMetadata(endpointName string, requestName string, requestType string, responseName string, responseType string) (m TransportMetadata) {
 	m.EndpointName = endpointName
 	m.RequestName = requestName
 	m.RequestType = requestType
@@ -52,4 +52,8 @@ func metadata(endpointName string, requestName string, requestType string, respo
 	m.ResponseType = responseType
 
 	return m
+}
+
+func main() {
+	transportGen()
 }

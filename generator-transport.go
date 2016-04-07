@@ -7,7 +7,7 @@ import (
 	"text/template"
 )
 
-type Metadata struct {
+type TransportMetadata struct {
 	EndpointName string
 	RequestName  string
 	RequestType  string
@@ -19,7 +19,7 @@ type Generator struct {
 	buf bytes.Buffer
 }
 
-func (g *Generator) Generate(writer io.Writer, metadata Metadata) error {
+func (g *Generator) Transport(writer io.Writer, metadata TransportMetadata) error {
 	tmpl, err := g.template()
 	if err != nil {
 		return nil
