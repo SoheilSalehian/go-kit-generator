@@ -1,0 +1,48 @@
+// GENERATED FILE -- DO NOT EDIT PLEASE
+package main
+
+import (
+	"encoding/json"
+	"net/http"
+
+	"github.com/go-kit/kit/endpoint"
+	"golang.org/x/net/context"
+)
+
+// Request
+type {{ .EndpointName }}Request struct {
+{{ .RequestInput }} {{ .InputType }} `json:"{{ .RequestInput }}"`
+}
+
+// Response
+type {{ .EndpointName }}Response struct {
+  {{ .ResponseOutput }} {{ .OutputType }} `json:"{{ .ResponseOutput }}"`
+	Err    string            `json:"err,omitempty"`
+}
+
+// Endpoint(s)
+func make{{ .EndpointName }}Endpoint(svc {{ .EndpointName }}Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+  req := request.({{ .EndpointName }}Request)
+  output, err := svc.{{ .EndpointName }}(req.{{ .RequestInput}})
+		if err != nil {
+    return {{ .EndpointName }}Response{\{{ .ResponseOutput }}, err.Error()}, nil
+		}
+    return {{ .EndpointName }} Response{\{{ .ResponseOutput }}, ""}, nil
+	}
+}
+
+// Decode Request
+func decode{{ .EndpointName }}Request(r *http.Request) (interface{}, error) {
+var request {{ .EndpointName }}Request
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		return nil, err
+	}
+	return request, nil
+}
+
+// Encode Response
+func encodeResponse(w http.ResponseWriter, response interface{}) error {
+	return json.NewEncoder(w).Encode(response)
+}
+
