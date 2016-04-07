@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"strings"
 	"text/template"
 )
 
@@ -37,7 +38,7 @@ func (g *Generator) transporTemplate() (*template.Template, error) {
 		return nil, err
 	}
 
-	tmpl := template.New("transportTemplate")
+	tmpl := template.New("transportTemplate").Funcs(funcMap)
 	return tmpl.Parse(string(resource))
 }
 
@@ -59,10 +60,38 @@ func (g *Generator) serviceTemplate() (*template.Template, error) {
 		return nil, err
 	}
 
-	tmpl := template.New(templateFile)
+	tmpl := template.New(templateFile).Funcs(funcMap)
+	return tmpl.Parse(string(resource))
+}
+
+func (g *Generator) Main(writer io.Writer, metadata Metadata) error {
+	tmpl, err := g.mainTemplate()
+	if err != nil {
+		return nil
+	}
+
+	return tmpl.Execute(writer, metadata)
+}
+
+func (g *Generator) mainTemplate() (*template.Template, error) {
+
+	// NOTE: main.tmpl makes go-bindata not parse the template properly
+	templateFile := "templates/srv-main.tmpl"
+
+	resource, err := Asset(templateFile)
+	if err != nil {
+		return nil, err
+	}
+
+	tmpl := template.New(templateFile).Funcs(funcMap)
 	return tmpl.Parse(string(resource))
 }
 
 func (g *Generator) Printf(format string, args ...interface{}) {
 	fmt.Fprintf(&g.buf, format, args...)
+}
+
+var funcMap = template.FuncMap{
+	"uppercase": strings.ToUpper,
+	"lowercase": strings.ToLower,
 }

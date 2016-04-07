@@ -1,0 +1,37 @@
+// *******************************************************
+// PARTIALLY GENERATED FILE -- Edit the indicated sections
+// Parameterized with:
+//
+// EndpointName = {{ .EndpointName }}
+// RequestName = {{ .RequestName }}
+// RequestType = {{ .RequestType }}
+// ResponseName = {{ .ResponseName }}
+// ResponseType = {{ .ResponseType }}
+// ********************************************************
+
+package main
+
+import (
+	"log"
+	"net/http"
+
+	httptransport "github.com/go-kit/kit/transport/http"
+	"golang.org/x/net/context"
+)
+
+func main() {
+	ctx := context.Background()
+  svc := service{}
+
+
+  handle{{ .EndpointName }} := httptransport.NewServer(
+		ctx,
+		make{{ .EndpointName }}Endpoint(svc),
+		decode{{ .EndpointName }}Request,
+		encodeResponse,
+	)
+
+  http.Handle("/{{ .EndpointName | lowercase }}", handle{{ .EndpointName }})
+  log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("{{ .EndpointName | uppercase }}_PORT"))))
+}
+

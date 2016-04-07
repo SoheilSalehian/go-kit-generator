@@ -66,7 +66,29 @@ func serviceGen() {
 	fmt.Printf("Generated %s\n", outputFile)
 }
 
+func mainGen() {
+
+	outputFile := "main_gen.go"
+	writer, err := os.Create(outputFile)
+	if err != nil {
+		panic(err)
+	}
+	defer writer.Close()
+
+	generator := &Generator{}
+
+	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType}
+	if err := generator.Main(writer, m); err != nil {
+		panic(err)
+	}
+
+	fmt.Println(m)
+
+	fmt.Printf("Generated %s\n", outputFile)
+}
+
 func main() {
 	transportGen()
 	serviceGen()
+	mainGen()
 }
