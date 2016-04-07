@@ -1,6 +1,6 @@
 # Makefile to generate the essential skeleton of a microservice 
 all:
-	go-bindata templates/... ; go build && cd ${U_SERVICE_DIR}; go generate && go fmt
+	mkdir ${U_SERVICE_DIR}; go-bindata templates/...; go build && cd ${U_SERVICE_DIR}; go generate && go fmt
 
 clean: 
 	rm bindata.go

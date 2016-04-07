@@ -1,0 +1,7 @@
+{
+  "endpoint_name": "Test",
+  "request_name": "TestRequest",
+  "request_type": "int",
+  "response_name": "TestResponse",
+  "response_type": "string"
+}

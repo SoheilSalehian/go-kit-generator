@@ -2,22 +2,22 @@
 // PARTIALLY GENERATED FILE -- Edit the indicated sections
 // Parameterized with:
 //
-// EndpointName = GenerateOcrQuality
-// RequestName = OcrText
-// RequestType = string
-// ResponseName = QualityMetric
-// ResponseType = OcrQuality
+// EndpointName = Test
+// RequestName = TestRequest
+// RequestType = int
+// ResponseName = TestResponse
+// ResponseType = string
 // ********************************************************
 
 package main
 
-type GenerateOcrQualityService interface {
-	CallGenerateOcrQuality(string) (OcrQuality, error)
+type TestService interface {
+	CallTest(int) (string, error)
 }
 
 type service struct{}
 
-type OcrQuality struct {
+type string struct {
 
 	// Add in the json struct elements that the service will return back in its response.
 	//
@@ -25,9 +25,9 @@ type OcrQuality struct {
 
 }
 
-func (service) CallGenerateOcrQuality(input string) (OcrQuality, error) {
+func (service) CallTest(input int) (string, error) {
 
-	output := OcrQuality{}
+	output := string{}
 
 	// Add in the main logic of the service
 	//
