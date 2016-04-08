@@ -1,0 +1,48 @@
+// ****************************************************************
+// GENERATED FILE -- DO NOT EDIT Unless Response type is not native
+// Parameterized with:
+//
+// EndpointName = {{ .EndpointName }}
+// RequestName = {{ .RequestName }}
+// RequestType = {{ .RequestType }}
+// ResponseName = {{ .ResponseName }}
+// ResponseType = {{ .ResponseType }}
+// ****************************************************************
+
+package main
+
+import (
+	"time"
+
+	"github.com/go-kit/kit/log"
+)
+
+type loggingMiddleware struct {
+	logger log.Logger
+  {{ .EndpointName }}Service
+}
+
+
+// Logging decoupled from the service logic
+func (mw loggingMiddleware) {{ .EndpointName }}({{ .RequestName }} {{ .RequestType }}) (output {{ .ResponseType }}, err error) {
+  defer func(begin time.Time) {
+    _ = mw.logger.Log(
+    "method", "{{ .EndpointName }}",
+    "input", {{ .RequestName }},
+    // NOTE: Ensure type "{{ .ResponseType }} is printable here
+    "output", output,
+    "err", err,
+    "took", time.Since(begin),
+    )
+  }(time.Now())
+
+  output, err = mw.{{ .EndpointName }}Service.{{ .EndpointName }}({{ .ResponseName }})
+  if err != nil {
+    return {{ .ResponseType}}{}
+  }
+
+  return output, nil
+}
+
+
+

@@ -87,8 +87,52 @@ func mainGen() {
 	fmt.Printf("Generated %s\n", outputFile)
 }
 
+func loggingGen() {
+
+	outputFile := "logging_gen.go"
+	writer, err := os.Create(outputFile)
+	if err != nil {
+		panic(err)
+	}
+	defer writer.Close()
+
+	generator := &Generator{}
+
+	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType}
+	if err := generator.Logging(writer, m); err != nil {
+		panic(err)
+	}
+
+	fmt.Println(m)
+
+	fmt.Printf("Generated %s\n", outputFile)
+}
+
+func instrumentationGen() {
+
+	outputFile := "instrumentation_gen.go"
+	writer, err := os.Create(outputFile)
+	if err != nil {
+		panic(err)
+	}
+	defer writer.Close()
+
+	generator := &Generator{}
+
+	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType}
+	if err := generator.Instrumentation(writer, m); err != nil {
+		panic(err)
+	}
+
+	fmt.Println(m)
+
+	fmt.Printf("Generated %s\n", outputFile)
+}
+
 func main() {
 	transportGen()
 	serviceGen()
 	mainGen()
+	loggingGen()
+	instrumentationGen()
 }

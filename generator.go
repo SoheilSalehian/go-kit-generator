@@ -2,10 +2,8 @@ package main
 
 import (
 	"bytes"
-	"fmt"
+	"html/template"
 	"io"
-	"strings"
-	"text/template"
 )
 
 type Metadata struct {
@@ -38,7 +36,7 @@ func (g *Generator) transporTemplate() (*template.Template, error) {
 		return nil, err
 	}
 
-	tmpl := template.New("transportTemplate").Funcs(funcMap)
+	tmpl := template.New(templateFile).Funcs(funcMap)
 	return tmpl.Parse(string(resource))
 }
 
@@ -87,11 +85,46 @@ func (g *Generator) mainTemplate() (*template.Template, error) {
 	return tmpl.Parse(string(resource))
 }
 
-func (g *Generator) Printf(format string, args ...interface{}) {
-	fmt.Fprintf(&g.buf, format, args...)
+func (g *Generator) loggingTemplate() (*template.Template, error) {
+
+	templateFile := "templates/logging.tmpl"
+
+	resource, err := Asset(templateFile)
+	if err != nil {
+		return nil, err
+	}
+
+	tmpl := template.New(templateFile).Funcs(funcMap)
+	return tmpl.Parse(string(resource))
 }
 
-var funcMap = template.FuncMap{
-	"uppercase": strings.ToUpper,
-	"lowercase": strings.ToLower,
+func (g *Generator) Logging(writer io.Writer, metadata Metadata) error {
+	tmpl, err := g.loggingTemplate()
+	if err != nil {
+		return nil
+	}
+
+	return tmpl.Execute(writer, metadata)
+}
+
+func (g *Generator) instrumentationTemplate() (*template.Template, error) {
+
+	templateFile := "templates/instrumentation.tmpl"
+
+	resource, err := Asset(templateFile)
+	if err != nil {
+		return nil, err
+	}
+
+	tmpl := template.New(templateFile).Funcs(funcMap)
+	return tmpl.Parse(string(resource))
+}
+
+func (g *Generator) Instrumentation(writer io.Writer, metadata Metadata) error {
+	tmpl, err := g.instrumentationTemplate()
+	if err != nil {
+		return nil
+	}
+
+	return tmpl.Execute(writer, metadata)
 }
