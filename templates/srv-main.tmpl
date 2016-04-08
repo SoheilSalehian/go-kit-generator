@@ -1,5 +1,5 @@
-// *******************************************************
-// PARTIALLY GENERATED FILE -- Edit the indicated sections
+// *********************************************************************
+// PARTIALLY GENERATED FILE -- DO NOT EDIT unless custom instrumentation
 // Parameterized with:
 //
 // EndpointName = {{ .EndpointName }}
@@ -7,7 +7,7 @@
 // RequestType = {{ .RequestType }}
 // ResponseName = {{ .ResponseName }}
 // ResponseType = {{ .ResponseType }}
-// ********************************************************
+// *********************************************************************
 
 package main
 
@@ -23,6 +23,36 @@ func main() {
 	ctx := context.Background()
   svc := service{}
 
+  // Setup logging
+	logger := log.NewLogfmtLogger(os.Stderr)
+
+  // Setup instrumentation
+	fieldKeys := []string{"method", "error"}
+	requestCount := kitprometheus.NewCounter(stdprometheus.CounterOpts{
+  Namespace: "{{ .EndpointName }}Group",
+		Subsystem: "[Add Microservice Name]",
+		Name:      "requestCount",
+		Help:      "Number of requests recieved",
+	}, fieldKeys)
+
+	requestLatency := metrics.NewTimeHistogram(time.Microsecond, kitprometheus.NewSummary(stdprometheus.SummaryOpts{
+  Namespace: "{{ .EndpointName }}Group",
+		Subsystem: "[Add Microservice Name]",
+		Name:      "requestLatencyMicroseconds",
+		Help:      "Total duration of requests in microseconds.",
+	}, fieldKeys))
+
+  // Add custom instrumentation interfaces
+  //
+  //
+
+  // Wire everything together
+  var svc {{ .EndpointName }}Service
+	svc = service{}
+	svc = loggingMiddleware{logger, svc}
+
+  // Add the custom instrumentation to the instrumentationMiddleware
+	svc = instrumentationMiddleware{requestCount, requestLatency, svc}
 
   handle{{ .EndpointName }} := httptransport.NewServer(
 		ctx,
@@ -32,6 +62,8 @@ func main() {
 	)
 
   http.Handle("/{{ .EndpointName | lowercase }}", handle{{ .EndpointName }})
-  log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("{{ .EndpointName | uppercase }}_PORT"))))
+  http.Handle("/metrics", stdprometheus.Handler())
+  _ = logger.Log("msg", "HTTP", "addr=", os.Getenv("U_{{ .EndpointName | uppercase }}_URL"))
+  _ = logger.Log("err", http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("U_{{ .EndpointName | uppercase }}_PORT")), nil))
 }
 
