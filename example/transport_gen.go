@@ -21,30 +21,30 @@ import (
 
 // Request
 type TestRequest struct {
-	TestRequest int `json:"TestRequest"`
+  TestRequest int `json:"TestRequest"`
 }
 
 // Response
 type TestResponse struct {
-	TestResponse string `json:"TestResponse"`
-	Err          string `json:"err,omitempty"`
+  TestResponse string `json:"TestResponse"`
+	Err    string            `json:"err,omitempty"`
 }
 
 // Endpoint(s)
 func makeTestEndpoint(svc TestService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(TestRequest)
-		serviceOutput, err := svc.Test(req.TestRequest)
+  req := request.(TestRequest)
+  serviceOutput, err := svc.Test(req.TestRequest)
 		if err != nil {
-			return TestResponse{serviceOutput, err}, nil
+      return TestResponse{ serviceOutput, err }, nil
 		}
-		return TestResponse{serviceOutput, ""}, nil
+    return TestResponse{ serviceOutput, "" }, nil
 	}
 }
 
 // Decode Request
 func decodeTestRequest(r *http.Request) (interface{}, error) {
-	var request TestRequest
+var request TestRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		return nil, err
 	}
@@ -55,3 +55,4 @@ func decodeTestRequest(r *http.Request) (interface{}, error) {
 func encodeResponse(w http.ResponseWriter, response interface{}) error {
 	return json.NewEncoder(w).Encode(response)
 }
+

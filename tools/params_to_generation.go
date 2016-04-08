@@ -25,7 +25,7 @@ func main() {
 	var conf Configuration
 	json.Unmarshal(raw, &conf)
 
-	configuration := fmt.Sprintf("package main\n//go:generate ../go-kit-generator -endpoint-name=%s -request-name=%s -request-type=%s -response-name=%s -response-type=%s \n", conf.EndpointName, conf.RequestName, conf.RequestType, conf.ResponseName, conf.ResponseType)
+	configuration := fmt.Sprintf("//******************************\n//GENERATED FILE -- DO NO EDIT\n//******************************\n\npackage main\n//go:generate ../tools/go-kit-generator -endpoint-name=%s -request-name=%s -request-type=%s -response-name=%s -response-type=%s ", conf.EndpointName, conf.RequestName, conf.RequestType, conf.ResponseName, conf.ResponseType)
 
 	err = ioutil.WriteFile(fmt.Sprintf("%s/gen.go", os.Args[2]), []byte(configuration), 0644)
 	if err != nil {

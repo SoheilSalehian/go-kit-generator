@@ -12,26 +12,26 @@
 package main
 
 type TestService interface {
-	CallTest(int) (string, error)
+CallTest (int) (string, error)
 }
 
 type service struct{}
 
 type string struct {
 
-	// Add in the json struct elements that the service will return back in its response.
-	//
-	//
+// Add in the json struct elements that the service will return back in its response.
+// 
+//
 
 }
 
 func (service) CallTest(input int) (string, error) {
 
-	output := string{}
+output := string {}
 
-	// Add in the main logic of the service
-	//
-	//
+// Add in the main logic of the service
+//
+//
 
 	return output, err
 }

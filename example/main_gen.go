@@ -21,15 +21,17 @@ import (
 
 func main() {
 	ctx := context.Background()
-	svc := service{}
+  svc := service{}
 
-	handleTest := httptransport.NewServer(
+
+  handleTest := httptransport.NewServer(
 		ctx,
 		makeTestEndpoint(svc),
 		decodeTestRequest,
 		encodeResponse,
 	)
 
-	http.Handle("/test", handleTest)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("TEST_PORT"))))
+  http.Handle("/test", handleTest)
+  log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("TEST_PORT"))))
 }
+
