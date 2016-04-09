@@ -121,10 +121,30 @@ func instrumentationGen() {
 	fmt.Printf("Generated %s\n", outputFile)
 }
 
+func dockerGen() {
+
+	outputFile := "Dockerfile"
+	writer, err := os.Create(outputFile)
+	if err != nil {
+		panic(err)
+	}
+	defer writer.Close()
+
+	generator := &Generator{}
+
+	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType}
+	if err := generator.Docker(writer, m); err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Generated %s\n", outputFile)
+}
+
 func main() {
 	transportGen()
 	serviceGen()
 	mainGen()
 	loggingGen()
 	instrumentationGen()
+	dockerGen()
 }

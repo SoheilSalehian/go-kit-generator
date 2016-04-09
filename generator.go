@@ -130,3 +130,25 @@ func (g *Generator) Instrumentation(writer io.Writer, metadata Metadata) error {
 
 	return tmpl.Execute(writer, metadata)
 }
+
+func (g *Generator) dockerTemplate() (*template.Template, error) {
+
+	templateFile := "templates/Dockerfile.tmpl"
+
+	resource, err := Asset(templateFile)
+	if err != nil {
+		return nil, err
+	}
+
+	tmpl := template.New(templateFile).Funcs(funcMap)
+	return tmpl.Parse(string(resource))
+}
+
+func (g *Generator) Docker(writer io.Writer, metadata Metadata) error {
+	tmpl, err := g.dockerTemplate()
+	if err != nil {
+		return nil
+	}
+
+	return tmpl.Execute(writer, metadata)
+}
