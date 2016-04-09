@@ -38,9 +38,13 @@ func (mw instrumentationMiddleware) {{ .EndpointName }}({{ .RequestName }} {{ .R
     //
 	}(time.Now())
 
-  output, err = mw.{{ .EndpointName }}Service.{{ .EndpointName }}({{ .RequestName }})
+  output, err = mw.{{ .EndpointName }}Service.Call{{ .EndpointName }}({{ .RequestName }})
 	if err != nil {
-  return {{ .ResponseType }} {}, err
+  {{ if .ResponseType | nativetype }} 
+    return "", err
+  {{ else }}
+    return {{ .ResponseType }} {}, err
+  {{ end }}
 	}
 
 	return output, nil

@@ -29,16 +29,20 @@ func (mw loggingMiddleware) {{ .EndpointName }}({{ .RequestName }} {{ .RequestTy
     _ = mw.logger.Log(
     "method", "{{ .EndpointName }}",
     "input", {{ .RequestName }},
-    // NOTE: Ensure type "{{ .ResponseType }} is printable here
+    // NOTE: Ensure type "{{ .ResponseType }}" is printable here
     "output", output,
     "err", err,
     "took", time.Since(begin),
     )
   }(time.Now())
 
-  output, err = mw.{{ .EndpointName }}Service.{{ .EndpointName }}({{ .ResponseName }})
+  output, err = mw.{{ .EndpointName }}Service.Call{{ .EndpointName }}({{ .RequestName }})
   if err != nil {
-    return {{ .ResponseType}}{}
+  {{ if .ResponseType | nativetype }} 
+    return "", err
+  {{ else }}
+    return {{ .ResponseType }} {}, err
+  {{ end }}
   }
 
   return output, nil

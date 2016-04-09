@@ -14,6 +14,8 @@ type Metadata struct {
 	ResponseType string
 }
 
+var NativeType bool
+
 type Generator struct {
 	buf bytes.Buffer
 }

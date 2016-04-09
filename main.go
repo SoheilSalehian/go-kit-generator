@@ -61,8 +61,6 @@ func serviceGen() {
 		panic(err)
 	}
 
-	fmt.Println(m)
-
 	fmt.Printf("Generated %s\n", outputFile)
 }
 
@@ -81,8 +79,6 @@ func mainGen() {
 	if err := generator.Main(writer, m); err != nil {
 		panic(err)
 	}
-
-	fmt.Println(m)
 
 	fmt.Printf("Generated %s\n", outputFile)
 }
@@ -103,8 +99,6 @@ func loggingGen() {
 		panic(err)
 	}
 
-	fmt.Println(m)
-
 	fmt.Printf("Generated %s\n", outputFile)
 }
 
@@ -123,8 +117,6 @@ func instrumentationGen() {
 	if err := generator.Instrumentation(writer, m); err != nil {
 		panic(err)
 	}
-
-	fmt.Println(m)
 
 	fmt.Printf("Generated %s\n", outputFile)
 }

@@ -34,9 +34,9 @@ type {{ .EndpointName }}Response struct {
 func make{{ .EndpointName }}Endpoint(svc {{ .EndpointName }}Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
   req := request.({{ .EndpointName }}Request)
-  serviceOutput, err := svc.{{ .EndpointName }}(req.{{ .RequestName}})
+  serviceOutput, err := svc.Call{{ .EndpointName }}(req.{{ .RequestName}})
 		if err != nil {
-      return {{ .EndpointName }}Response{ serviceOutput, err }, nil
+      return {{ .EndpointName }}Response{ serviceOutput, err.Error() }, nil
 		}
     return {{ .EndpointName }}Response{ serviceOutput, "" }, nil
 	}
