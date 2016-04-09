@@ -34,9 +34,9 @@ type TestResponse struct {
 func makeTestEndpoint(svc TestService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
   req := request.(TestRequest)
-  serviceOutput, err := svc.Test(req.TestRequest)
+  serviceOutput, err := svc.CallTest(req.TestRequest)
 		if err != nil {
-      return TestResponse{ serviceOutput, err }, nil
+      return TestResponse{ serviceOutput, err.Error() }, nil
 		}
     return TestResponse{ serviceOutput, "" }, nil
 	}

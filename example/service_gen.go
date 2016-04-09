@@ -17,21 +17,20 @@ CallTest (int) (string, error)
 
 type service struct{}
 
-type string struct {
+// Define the service output struct if not native type
+ 
 
-// Add in the json struct elements that the service will return back in its response.
-// 
-//
 
-}
 
 func (service) CallTest(input int) (string, error) {
 
-output := string {}
+ 
+  output := ""
+
 
 // Add in the main logic of the service
 //
 //
 
-	return output, err
+	return output, nil
 }
