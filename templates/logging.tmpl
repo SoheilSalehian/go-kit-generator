@@ -1,5 +1,6 @@
 // ****************************************************************
 // GENERATED FILE -- DO NOT EDIT Unless Response type is not native
+// @ {{ timestamp }}
 // Parameterized with:
 //
 // EndpointName = {{ .EndpointName }}
@@ -24,10 +25,10 @@ type loggingMiddleware struct {
 
 
 // Logging decoupled from the service logic
-func (mw loggingMiddleware) {{ .EndpointName }}({{ .RequestName }} {{ .RequestType }}) (output {{ .ResponseType }}, err error) {
+func (mw loggingMiddleware) Call{{ .EndpointName }}({{ .RequestName }} {{ .RequestType }}) (output {{ .ResponseType }}, err error) {
   defer func(begin time.Time) {
     _ = mw.logger.Log(
-    "method", "{{ .EndpointName }}",
+    "method", "Call{{ .EndpointName }}",
     "input", {{ .RequestName }},
     // NOTE: Ensure type "{{ .ResponseType }}" is printable here
     "output", output,

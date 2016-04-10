@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"html/template"
 	"strings"
+	"time"
 )
 
 var funcMap = template.FuncMap{
 	"uppercase":  strings.ToUpper,
 	"lowercase":  strings.ToLower,
 	"nativetype": nativetype,
+	"timestamp":  timestamp,
 }
 
 func (g *Generator) Printf(format string, args ...interface{}) {
@@ -25,4 +27,8 @@ func nativetype(input string) bool {
 		}
 	}
 	return false
+}
+
+func timestamp() string {
+	return time.Now().Format(time.RFC850)
 }

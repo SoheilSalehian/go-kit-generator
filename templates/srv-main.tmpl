@@ -1,5 +1,6 @@
 // *********************************************************************
 // PARTIALLY GENERATED FILE -- DO NOT EDIT unless custom instrumentation
+// @ {{ timestamp }}
 // Parameterized with:
 //
 // EndpointName = {{ .EndpointName }}
@@ -35,14 +36,16 @@ func main() {
 	fieldKeys := []string{"method", "error"}
 	requestCount := kitprometheus.NewCounter(stdprometheus.CounterOpts{
   Namespace: "{{ .EndpointName }}Group",
-		Subsystem: "[Add Microservice Name]",
+    // NOTE: Specify the micorservice name
+		Subsystem: "Microservice_Name",
 		Name:      "requestCount",
 		Help:      "Number of requests recieved",
 	}, fieldKeys)
 
 	requestLatency := metrics.NewTimeHistogram(time.Microsecond, kitprometheus.NewSummary(stdprometheus.SummaryOpts{
   Namespace: "{{ .EndpointName }}Group",
-		Subsystem: "[Add Microservice Name]",
+    // NOTE: Specify the micorservice name
+		Subsystem: "Microservice_Name",
 		Name:      "requestLatencyMicroseconds",
 		Help:      "Total duration of requests in microseconds.",
 	}, fieldKeys))

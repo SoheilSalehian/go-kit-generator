@@ -1,5 +1,6 @@
 // ***********************************************************************
 // GENERATED FILE -- DO NOT EDIT Unless custom instrumentation is required
+// @ {{ timestamp }}
 // Parameterized with:
 //
 // EndpointName = {{ .EndpointName }}
@@ -27,9 +28,9 @@ type instrumentationMiddleware struct {
   {{ .EndpointName }}Service
 }
 
-func (mw instrumentationMiddleware) {{ .EndpointName }}({{ .RequestName }} {{ .RequestType }}) (output {{ .ResponseType}}, err error) {
+func (mw instrumentationMiddleware) Call{{ .EndpointName }}({{ .RequestName }} {{ .RequestType }}) (output {{ .ResponseType}}, err error) {
 	defer func(begin time.Time) {
-  methodField := metrics.Field{Key: "method", Value: "{{ .EndpointName }}"}
+  methodField := metrics.Field{Key: "method", Value: "Call{{ .EndpointName }}"}
 		errorField := metrics.Field{Key: "err", Value: fmt.Sprintf("%v", err)}
 		mw.requestCount.With(methodField).With(errorField).Add(1)
 		mw.requestLatency.With(methodField).With(errorField).Observe(time.Since(begin))
