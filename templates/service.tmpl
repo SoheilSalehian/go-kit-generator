@@ -18,10 +18,23 @@ Call{{ .EndpointName }} ({{ .RequestType }}) ({{ .ResponseType }}, error)
 
 type service struct{}
 
-// Define the service output struct if not native type
+{{ if .RequestType | nativetype }} 
+
+{{ else }}
+// Define the service input struct if not native type
+type {{ .RequestType }} struct {
+
+// Add in the json struct elements that the service will use as part of the request.
+// 
+//
+
+}
+{{ end }}
+
 {{ if .ResponseType | nativetype }} 
 
 {{ else }}
+// Define the service output struct if not native type
 type {{ .ResponseType }} struct {
 
 // Add in the json struct elements that the service will return back in its response.
@@ -47,3 +60,4 @@ func (service) Call{{ .EndpointName }}(input {{ .RequestType }}) ({{ .ResponseTy
 
 	return output, nil
 }
+
