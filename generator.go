@@ -7,13 +7,13 @@ import (
 )
 
 type Metadata struct {
-	EndpointName     string
-	RequestName      string
-	RequestType      string
-	ResponseName     string
-	ResponseType     string
-	GenerateGateway  bool
-	FirstServiceName string
+	EndpointName    string
+	RequestName     string
+	RequestType     string
+	ResponseName    string
+	ResponseType    string
+	GenerateGateway bool
+	ServiceOrder    []string
 }
 
 var NativeType bool

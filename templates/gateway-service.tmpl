@@ -1,0 +1,139 @@
+// *******************************************************
+// PARTIALLY GENERATED FILE -- Edit the indicated sections
+// @ {{ timestamp }}
+// Parameterized with:
+//
+// EndpointName = {{ .EndpointName }}
+// RequestName = {{ .RequestName }}
+// RequestType = {{ .RequestType }}
+// ResponseName = {{ .ResponseName }}
+// ResponseType = {{ .ResponseType }}
+// 
+// ServiceOrder: {{ range $service := .ServiceOrder }} {{ $service }} -> {{ end }}
+// ********************************************************
+
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"io/ioutil"
+	"net/http"
+	"os"
+
+	"github.com/prometheus/common/log"
+)
+
+type {{ .EndpointName }}Service interface {
+Call{{ .EndpointName }} ({{ .RequestType }}) ({{ .ResponseType }}, error)
+}
+
+type service struct{}
+
+type S3Type struct {
+	ContentType string `json:"content_type"`
+	Bucket      string `json:"bucket"`
+	FileName    string `json:"file_name"`
+	Id          string `json:"id"`
+}
+
+{{ range $service := .ServiceOrder }}
+type {{ $service }}Request struct {
+{{ $service }}Req S3Type `json:"{{ $service | lowercase}}req"`
+}
+{{ end }}
+
+func (service) Call{{ .EndpointName }}(input S3Type) (map[string]interface{}, error) {
+
+  logFlag := "[{{ .EndpointName }}]"
+
+  if input.FileName == "" {
+		err := errors.New("Got an empty file name in the gateway.")
+		log.Error(logFlag, err)
+		return nil, err
+	}
+
+  {{ range $service := .ServiceOrder }}
+  {{ $service | lowercase }}Result, err := {{ $service }}({{ $service }}Request{input})
+	if err != nil {
+  log.Error(logFlag, "Error calling {{ $service | lowercase }}.")
+		return nil, err
+	}
+
+  {{ end }}
+
+  output := firstResult
+
+	return output, nil
+}
+
+
+
+{{ range $service := .ServiceOrder }}
+
+func {{ $service }}(externalReq {{ $service }}Request) (map[string]interface{}, error) {
+  logFlag := "[{{ $service | lowercase }}]"
+  url := os.Getenv("U_{{ $service | uppercase }}_URL")
+	if url == "" {
+  return nil, errors.New("URL env variable for {{ $service | lowercase }} is not set.")
+	}
+
+  result, _ := makeRequest(externalReq, url, logFlag)
+
+	return result, nil
+}
+
+{{ end }}
+
+
+func makeRequest(serviceReq interface{}, url, logFlag string) (map[string]interface{}, error) {
+
+	jsonBytes, err := json.Marshal(serviceReq)
+	if err != nil {
+		log.Error(logFlag, "Error marshaling  request.")
+		return nil, err
+	}
+	log.Debugln(string(jsonBytes))
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonBytes))
+	if err != nil {
+		log.Error(logFlag, "Error building the  request.")
+		return nil, err
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Error(logFlag, "Error doing the  request.", err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		log.Error(logFlag, "Bad response status from service: HTTP ", resp.StatusCode)
+		return nil, err
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Error(logFlag, "Error reading the body of the response.")
+		return nil, err
+	}
+
+	var result interface{}
+
+	if err := json.Unmarshal(body, &result); err != nil {
+		log.Error(logFlag, "Error unmarshaling the body of the response.")
+		return nil, err
+	}
+
+	return result.(map[string]interface{}), nil
+}
+
+
+
+
+
+
+

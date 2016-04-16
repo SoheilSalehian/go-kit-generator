@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"strings"
@@ -12,6 +13,8 @@ var funcMap = template.FuncMap{
 	"lowercase":  strings.ToLower,
 	"nativetype": nativetype,
 	"timestamp":  timestamp,
+	"first":      first,
+	"last":       last,
 }
 
 func (g *Generator) Printf(format string, args ...interface{}) {
@@ -31,4 +34,38 @@ func nativetype(input string) bool {
 
 func timestamp() string {
 	return time.Now().Format(time.RFC850)
+}
+
+func first(list []string) string {
+	return list[0]
+}
+
+func last(list []string) string {
+	return list[len(list)-1]
+}
+
+type arrayFlags []string
+
+func (i *arrayFlags) String() string {
+	return "my string representation"
+}
+
+// func (i *arrayFlags) Set(value string) error {
+// 	*i = append(*i, value)
+// 	return nil
+// }
+
+func (i *arrayFlags) Set(value string) error {
+	// If we wanted to allow the flag to be set multiple times,
+	// accumulating values, we would delete this if statement.
+	// That would permit usages such as
+	//	-deltaT 10s -deltaT 15s
+	// and other combinations.
+	if len(*i) > 0 {
+		return errors.New("service-order flag already set")
+	}
+	for _, svc := range strings.Split(value, ",") {
+		*i = append(*i, svc)
+	}
+	return nil
 }
