@@ -7,11 +7,13 @@ import (
 )
 
 type Metadata struct {
-	EndpointName string
-	RequestName  string
-	RequestType  string
-	ResponseName string
-	ResponseType string
+	EndpointName     string
+	RequestName      string
+	RequestType      string
+	ResponseName     string
+	ResponseType     string
+	GenerateGateway  bool
+	FirstServiceName string
 }
 
 var NativeType bool
@@ -146,6 +148,28 @@ func (g *Generator) dockerTemplate() (*template.Template, error) {
 
 func (g *Generator) Docker(writer io.Writer, metadata Metadata) error {
 	tmpl, err := g.dockerTemplate()
+	if err != nil {
+		return nil
+	}
+
+	return tmpl.Execute(writer, metadata)
+}
+
+func (g *Generator) apiGatewayTemplate() (*template.Template, error) {
+
+	templateFile := "templates/gateway-service.tmpl"
+
+	resource, err := Asset(templateFile)
+	if err != nil {
+		return nil, err
+	}
+
+	tmpl := template.New(templateFile).Funcs(funcMap)
+	return tmpl.Parse(string(resource))
+}
+
+func (g *Generator) apiGateway(writer io.Writer, metadata Metadata) error {
+	tmpl, err := g.apiGatewayTemplate()
 	if err != nil {
 		return nil
 	}

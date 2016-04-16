@@ -71,6 +71,7 @@ func main() {
 
   http.Handle("/{{ .EndpointName | lowercase }}", handle{{ .EndpointName }})
   http.Handle("/metrics", stdprometheus.Handler())
+  fmt.Println("addr=", os.Getenv("U_{{ .EndpointName | uppercase }}_URL"))
   _ = logger.Log("msg", "HTTP", "addr=", os.Getenv("U_{{ .EndpointName | uppercase }}_URL"))
   _ = logger.Log("err", http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("U_{{ .EndpointName | uppercase }}_PORT")), nil), nil)
 }

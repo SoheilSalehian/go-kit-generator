@@ -11,6 +11,8 @@ var requestName = flag.String("request-name", "", "")
 var requestType = flag.String("request-type", "", "")
 var responseName = flag.String("response-name", "", "")
 var responseType = flag.String("response-type", "", "")
+var generateGateway = flag.Bool("generate-gateway", false, "")
+var firstServiceName = flag.String("first-service-name", "", "")
 
 func init() {
 	flag.Usage = func() {
@@ -37,7 +39,7 @@ func transportGen() {
 
 	generator := &Generator{}
 
-	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType}
+	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType, *generateGateway, *firstServiceName}
 	if err := generator.Transport(writer, m); err != nil {
 		panic(err)
 	}
@@ -56,7 +58,7 @@ func serviceGen() {
 
 	generator := &Generator{}
 
-	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType}
+	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType, *generateGateway, *firstServiceName}
 	if err := generator.Service(writer, m); err != nil {
 		panic(err)
 	}
@@ -75,7 +77,7 @@ func mainGen() {
 
 	generator := &Generator{}
 
-	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType}
+	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType, *generateGateway, *firstServiceName}
 	if err := generator.Main(writer, m); err != nil {
 		panic(err)
 	}
@@ -94,7 +96,7 @@ func loggingGen() {
 
 	generator := &Generator{}
 
-	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType}
+	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType, *generateGateway, *firstServiceName}
 	if err := generator.Logging(writer, m); err != nil {
 		panic(err)
 	}
@@ -113,7 +115,7 @@ func instrumentationGen() {
 
 	generator := &Generator{}
 
-	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType}
+	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType, *generateGateway, *firstServiceName}
 	if err := generator.Instrumentation(writer, m); err != nil {
 		panic(err)
 	}
@@ -132,8 +134,27 @@ func dockerGen() {
 
 	generator := &Generator{}
 
-	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType}
+	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType, *generateGateway, *firstServiceName}
 	if err := generator.Docker(writer, m); err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Generated %s\n", outputFile)
+}
+
+func apiGatewayGen() {
+
+	outputFile := "gateway-service_gen.go"
+	writer, err := os.Create(outputFile)
+	if err != nil {
+		panic(err)
+	}
+	defer writer.Close()
+
+	generator := &Generator{}
+
+	m := Metadata{*endpointName, *requestName, *requestType, *responseName, *responseType, *generateGateway, *firstServiceName}
+	if err := generator.apiGateway(writer, m); err != nil {
 		panic(err)
 	}
 
@@ -142,7 +163,11 @@ func dockerGen() {
 
 func main() {
 	transportGen()
-	serviceGen()
+	if *generateGateway == true {
+		apiGatewayGen()
+	} else {
+		serviceGen()
+	}
 	mainGen()
 	loggingGen()
 	instrumentationGen()
