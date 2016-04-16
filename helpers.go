@@ -15,6 +15,7 @@ var funcMap = template.FuncMap{
 	"timestamp":  timestamp,
 	"first":      first,
 	"last":       last,
+	"zero":       zero,
 }
 
 func (g *Generator) Printf(format string, args ...interface{}) {
@@ -42,6 +43,13 @@ func first(list []string) string {
 
 func last(list []string) string {
 	return list[len(list)-1]
+}
+
+func zero(index int) bool {
+	if index == 0 {
+		return true
+	}
+	return false
 }
 
 type arrayFlags []string

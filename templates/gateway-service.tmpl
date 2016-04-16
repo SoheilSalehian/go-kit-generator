@@ -54,17 +54,21 @@ func (service) Call{{ .EndpointName }}(input S3Type) (map[string]interface{}, er
 		return nil, err
 	}
 
-  {{ range $service := .ServiceOrder }}
-  {{ $service | lowercase }}Result, err := {{ $service }}({{ $service }}Request{input})
-	if err != nil {
+  // In order to keep the interactions between each service and gateway simple
+  var next interface{}
+
+  {{ range $order, $service := .ServiceOrder }}{{ if $order | zero }}
+  {{ $service | lowercase }}Result, err := {{ $service }}({{ $service }}Request{input}){{ else }}
+  {{ $service | lowercase }}Result, err := {{ $service }}({{ $service }}Request{next.(S3Type)}){{ end }}
+  	if err != nil {
   log.Error(logFlag, "Error calling {{ $service | lowercase }}.")
 		return nil, err
 	}
 
+  next = {{ $service | lowercase}}Result 
   {{ end }}
 
-  output := firstResult
-
+  output := next.(map[string]interface{})
 	return output, nil
 }
 
@@ -72,14 +76,17 @@ func (service) Call{{ .EndpointName }}(input S3Type) (map[string]interface{}, er
 
 {{ range $service := .ServiceOrder }}
 
-func {{ $service }}(externalReq {{ $service }}Request) (map[string]interface{}, error) {
+func {{ $service }}(externalReq {{ $service }}Request) (interface{}, error) {
   logFlag := "[{{ $service | lowercase }}]"
   url := os.Getenv("U_{{ $service | uppercase }}_URL")
 	if url == "" {
   return nil, errors.New("URL env variable for {{ $service | lowercase }} is not set.")
 	}
 
-  result, _ := makeRequest(externalReq, url, logFlag)
+  result, err := makeRequest(externalReq, url, logFlag)
+  if err != nil {
+    return nil, err
+  }
 
 	return result, nil
 }
