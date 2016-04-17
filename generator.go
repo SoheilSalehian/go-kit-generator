@@ -14,6 +14,7 @@ type Metadata struct {
 	ResponseType    string
 	GenerateGateway bool
 	ServiceOrder    []string
+	PipelineService bool
 }
 
 var NativeType bool

@@ -12,6 +12,16 @@
 
 package main
 
+import (
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"os/exec"
+
+	"github.com/OwnLocal/PipeDream/pipaws"
+	"github.com/prometheus/common/log"
+)
+
 type {{ .EndpointName }}Service interface {
 Call{{ .EndpointName }} ({{ .RequestType }}) ({{ .ResponseType }}, error)
 }
@@ -19,7 +29,7 @@ Call{{ .EndpointName }} ({{ .RequestType }}) ({{ .ResponseType }}, error)
 type service struct{}
 
 {{ if .RequestType | nativetype }} 
-
+{{ else if .RequestType | s3type }} 
 {{ else }}
 // Define the service input struct if not native type
 type {{ .RequestType }} struct {
@@ -32,7 +42,7 @@ type {{ .RequestType }} struct {
 {{ end }}
 
 {{ if .ResponseType | nativetype }} 
-
+{{ else if .ResponseType | s3type }} 
 {{ else }}
 // Define the service output struct if not native type
 type {{ .ResponseType }} struct {
@@ -45,19 +55,51 @@ type {{ .ResponseType }} struct {
 {{ end }}
 
 func (service) Call{{ .EndpointName }}(input {{ .RequestType }}) ({{ .ResponseType }}, error) {
+{{ if .PipelineService }}
+  
+  // Download the input file 
+	err := aws.Download(input)
+	if err != nil {
+		log.Error(err)
+		return "", err
+	}
 
-{{ if .ResponseType | nativetype }} 
-  output := ""
+  	output := aws.S3Type{Bucket: input.Bucket, FileName: fmt.Sprintf("%s.PNG", input.FileName), ContentType: ""}
 
 {{ else }}
-
-  output := {{ .ResponseType }} {}
-
+{{ if .ResponseType | nativetype }} 
+  output := ""
+{{ end }}
 {{ end }}
 // Add in the main logic of the service
-//
-//
+// For instance:
+// cmd := fmt.Sprintf("pdftoppm -png %s > %s", input.FileName, output.FileName)
+// if exec.Command("sh", "-c", cmd).Run(); err != nil {
+//   log.Error(err)
+//	 return "", err
+// }
 
+{{ if .PipelineService }}
+  // Read the downloaded file on disk
+  bytes, err := ioutil.ReadFile(input.FileName)
+	if err != nil {
+		log.Error(err)
+		return "", err
+	}
+
+  // Detect the content type
+	output.ContentType = http.DetectContentType(bytes)
+
+  // Upload to S3
+	if aws.Upload(output, bytes); err != nil {
+		log.Error(err)
+		return "", err
+	}
+
+  return output.FullPath(), nil
+
+{{ else }}
 	return output, nil
+{{ end }}
 }
 
