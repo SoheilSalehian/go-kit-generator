@@ -22,6 +22,11 @@ import (
 	"net/http"
 	"os"
 
+  {{ if .RequestType | s3type }} 
+  "github.com/OwnLocal/PipeDream/aws"
+  {{ else }}
+  {{ end }}
+
 	"github.com/prometheus/common/log"
 )
 
@@ -31,20 +36,16 @@ Call{{ .EndpointName }} ({{ .RequestType }}) ({{ .ResponseType }}, error)
 
 type service struct{}
 
-type S3Type struct {
-	ContentType string `json:"content_type"`
-	Bucket      string `json:"bucket"`
-	FileName    string `json:"file_name"`
-	Id          string `json:"id"`
-}
-
 {{ range $service := .ServiceOrder }}
 type {{ $service }}Request struct {
-{{ $service }}Req S3Type `json:"{{ $service | lowercase}}req"`
+{{ $service }}Req aws.S3Type `json:"{{ $service | lowercase}}req"`
 }
 {{ end }}
 
-func (service) Call{{ .EndpointName }}(input S3Type) (map[string]interface{}, error) {
+func (service) Call{{ .EndpointName }}(input aws.S3Type) (map[string]interface{}, error) {
+
+  var output map[string]interface{}
+  var s3 aws.S3Type
 
   logFlag := "[{{ .EndpointName }}]"
 
@@ -54,21 +55,19 @@ func (service) Call{{ .EndpointName }}(input S3Type) (map[string]interface{}, er
 		return nil, err
 	}
 
-  // In order to keep the interactions between each service and gateway simple
-  var next interface{}
-
   {{ range $order, $service := .ServiceOrder }}{{ if $order | zero }}
   {{ $service | lowercase }}Result, err := {{ $service }}({{ $service }}Request{input}){{ else }}
-  {{ $service | lowercase }}Result, err := {{ $service }}({{ $service }}Request{next.(S3Type)}){{ end }}
+  {{ $service | lowercase }}Result, err := {{ $service }}({{ $service }}Request{s3}){{ end }}
   	if err != nil {
   log.Error(logFlag, "Error calling {{ $service | lowercase }}.")
 		return nil, err
 	}
 
-  next = {{ $service | lowercase}}Result 
+  s3 = aws.InterfaceToS3Type({{ $service | lowercase}}Result) 
+
+  output = {{ $service | lowercase}}Result.(map[string]interface{})
   {{ end }}
 
-  output := next.(map[string]interface{})
 	return output, nil
 }
 

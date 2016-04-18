@@ -15,6 +15,10 @@ package main
 import (
 	"fmt"
 	"time"
+  {{ if .RequestType | s3type }} 
+  "github.com/OwnLocal/PipeDream/aws"
+  {{ else }}
+  {{ end }}
 
 	"github.com/go-kit/kit/metrics"
 )

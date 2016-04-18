@@ -16,9 +16,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os/exec"
 
-	"github.com/OwnLocal/PipeDream/pipaws"
+  {{ if .RequestType | s3type }} 
+  "github.com/OwnLocal/PipeDream/aws"
+  {{ else }}
+  {{ end }}
 	"github.com/prometheus/common/log"
 )
 
@@ -61,10 +63,11 @@ func (service) Call{{ .EndpointName }}(input {{ .RequestType }}) ({{ .ResponseTy
 	err := aws.Download(input)
 	if err != nil {
 		log.Error(err)
-		return "", err
+    return aws.S3Type{}, err
 	}
 
-  	output := aws.S3Type{Bucket: input.Bucket, FileName: fmt.Sprintf("%s.PNG", input.FileName), ContentType: ""}
+    // Set the output type including the output artifcat extension
+  	output := aws.S3Type{Bucket: input.Bucket, FileName: fmt.Sprintf("%s.PNG", input.FileName), ContentType: "", Id: input.Id}
 
 {{ else }}
 {{ if .ResponseType | nativetype }} 
@@ -76,15 +79,17 @@ func (service) Call{{ .EndpointName }}(input {{ .RequestType }}) ({{ .ResponseTy
 // cmd := fmt.Sprintf("pdftoppm -png %s > %s", input.FileName, output.FileName)
 // if exec.Command("sh", "-c", cmd).Run(); err != nil {
 //   log.Error(err)
-//	 return "", err
+//	 return aws.S3Type{}, err
 // }
 
+  log.Info(input.FileName, " -> ", output.FileName)
+
 {{ if .PipelineService }}
-  // Read the downloaded file on disk
-  bytes, err := ioutil.ReadFile(input.FileName)
+  // Read the transformed file
+  bytes, err := ioutil.ReadFile(output.FileName)
 	if err != nil {
 		log.Error(err)
-		return "", err
+    return aws.S3Type{}, err
 	}
 
   // Detect the content type
@@ -93,10 +98,10 @@ func (service) Call{{ .EndpointName }}(input {{ .RequestType }}) ({{ .ResponseTy
   // Upload to S3
 	if aws.Upload(output, bytes); err != nil {
 		log.Error(err)
-		return "", err
+    return aws.S3Type{}, err
 	}
 
-  return output.FullPath(), nil
+  return output, nil
 
 {{ else }}
 	return output, nil

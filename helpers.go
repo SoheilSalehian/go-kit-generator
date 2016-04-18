@@ -41,8 +41,13 @@ func first(list []string) string {
 	return list[0]
 }
 
-func last(list []string) string {
-	return list[len(list)-1]
+func length(list []string) int {
+	return len(list)
+}
+
+func last(list []string, i int) bool {
+	fmt.Println(len(list), i)
+	return len(list) == i
 }
 
 func zero(index int) bool {
@@ -69,6 +74,6 @@ func (i *arrayFlags) Set(value string) error {
 }
 
 func s3type(t string) bool {
-	return t == "pipaws.S3Type"
+	return t == "aws.S3Type"
 
 }
