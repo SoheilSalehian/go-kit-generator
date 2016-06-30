@@ -43,7 +43,7 @@ func make{{ .EndpointName }}Endpoint(svc {{ .EndpointName }}Service) endpoint.En
 }
 
 // Decode Request
-func decode{{ .EndpointName }}Request(r *http.Request) (interface{}, error) {
+func decode{{ .EndpointName }}Request(_ context.Context, r *http.Request) (interface{}, error) {
 var request {{ .EndpointName }}Request
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		return nil, err
@@ -52,7 +52,7 @@ var request {{ .EndpointName }}Request
 }
 
 // Encode Response
-func encodeResponse(w http.ResponseWriter, response interface{}) error {
+func encodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
 	return json.NewEncoder(w).Encode(response)
 }
 
