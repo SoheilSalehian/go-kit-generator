@@ -1,5 +1,6 @@
 // *********************************************
 // GENERATED FILE -- DO NOT EDIT PLEASE
+// @ {{ timestamp }}
 // Parameterized with:
 //
 // EndpointName = {{ .EndpointName }}
@@ -15,6 +16,10 @@ import (
 	"encoding/json"
 	"net/http"
 
+  {{ if .RequestType | s3type }} 
+  aws "github.com/soheilsalehian/aws-gokit/aws"
+  {{ else }}
+  {{ end }}
 	"github.com/go-kit/kit/endpoint"
 	"golang.org/x/net/context"
 )
