@@ -16,10 +16,11 @@ import (
 	"encoding/json"
 	"net/http"
 
-  {{ if .RequestType | s3type }} 
-  aws "github.com/soheilsalehian/aws-gokit/aws"
+  {{ if .RequestType | nativetype }} 
   {{ else }}
+  aws "github.com/soheilsalehian/aws-gokit/aws"
   {{ end }}
+
 	"github.com/go-kit/kit/endpoint"
 	"golang.org/x/net/context"
 )
